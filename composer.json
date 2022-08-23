@@ -1,0 +1,18 @@
+{
+    "name": "v-e-y/telegram-bot-packagist",
+    "autoload": {
+        "psr-4": {
+            "VEY\\TelegramBotPackagist\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "V-E-Y",
+            "email": "v.eduard.y@gmail.com"
+        }
+    ],
+    "require": {
+        "vlucas/phpdotenv": "^5.4",
+        "guzzlehttp/guzzle": "^7.4"
+    }
+}

@@ -1,0 +1,4 @@
+*trash.*
+.env
+/vendor/
+.vscode
