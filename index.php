@@ -4,12 +4,23 @@ declare(strict_types=1);
 
 require './vendor/autoload.php';
 
-$dotenv = \Dotenv\Dotenv::createImmutable(__DIR__);
-$dotenv->load();
+use telegramBotPackagist\PackagistService;
+use telegramBotPackagist\ThePackagistBot;
+use GuzzleHttp\Client as HttpClient;
 
-echo $_ENV['TG_BOT_API_URL'];
+// App configs
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
 
-$token = $_ENV['TG_BOT_TOKEN'];
+// Init data file
+$dataFile = new SplFileObject(__DIR__ . '/src/data/lastUpdate.txt', 'r+');
 
-echo getenv('APP_NAME', false);
+// Init http client
+$httpClient = new HttpClient([
+    'timeout'  => 2.0
+]);
+
+// Init Bot
+$bot = new ThePackagistBot($dotenv->load(), $httpClient, $dataFile);
+
+$bot->getUpdates();
 

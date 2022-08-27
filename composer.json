@@ -1,8 +1,8 @@
 {
-    "name": "v-e-y/telegram-bot-packagist",
+    "name": "v-e-y/telegrambotpackagist",
     "autoload": {
         "psr-4": {
-            "VEY\\TelegramBotPackagist\\": "src/"
+            "telegramBotPackagist\\": "src/"
         }
     },
     "authors": [
