@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace telegramBotPackagist;
 
-use Dotenv\Parser\Value;
 use SplFileObject;
 use \GuzzleHttp\Client;
 use telegramBotPackagist\PackagistService;
@@ -28,6 +27,10 @@ final class ThePackagistBot
         $this->dataFile = $dataFile;
     }
 
+    /**
+     * Receive updates from bot and send response 
+     * @return void
+     */
     public function getUpdates()
     {
         $messagesFromBot = $this->httpClient->get(
@@ -43,25 +46,14 @@ final class ThePackagistBot
         return $this->sendResponseToChats($messagesFromBotArray['result']);
     }
 
-    /*
-    private function filterResponseFromBot(\GuzzleHttp\Psr7\Response $response): array|bool
-    {
-        $messages = array_map(function ($message) {
-            if ($message['message']['text']) {
-            }
-            return $message;
-        }, $resultArray['result']);
-        print_r($messages);
-        die;
-        return $resultArray['result'];
-    }
-    */
-
-    private function sendResponseToChats(array $messagesForResponse)
+    /**
+     * Send response to the chat
+     * @param array $messagesForResponse
+     * @return void
+     */
+    private function sendResponseToChats(array $messagesForResponse): void
     {
         foreach ($messagesForResponse as $messageNumber => $message) {
-            
-
             if (!array_key_exists('text', $message['message'])) {
                 continue;
             }
@@ -83,7 +75,11 @@ final class ThePackagistBot
         }
     }
 
-
+    /**
+     * Receive and prepare message from Packagist or default responses
+     * @param string $tag
+     * @return string|array
+     */
     private function getMessageForResponse(string $tag): string|array
     {
         if ($tag === $this->telegramBotConfigs['TG_BOT_START_COMMAND']) {
@@ -124,23 +120,36 @@ final class ThePackagistBot
                 $messageForSend .= '<strong>See all results:</strong> ' . $this->packagistService->getWebUrlForTag($tag);
             }
         }
-        
         return $messageForSend;
     }
 
+    /**
+     * Get last update number
+     * @return integer
+     */
     private function getOffset(): int
     {
         return (int)$this->dataFile->fgets();
     }
 
-    private function writeOffset(int $offset):void
+    /**
+     * Update last update number
+     * @param integer $offset
+     * @return void
+     */
+    private function writeOffset(int $offset): void
     {
-        $offset += 1;
+        $offset += 1; // +1 its a telegram "rule"
         $this->dataFile->ftruncate(0);
         $this->dataFile->rewind();
         $this->dataFile->fwrite((string)$offset);
     }
 
+    /**
+     * Write Bot configs to the object
+     * @param array $appConfigs // array from env file
+     * @return array
+     */
     private function setBotConfigs(array $appConfigs): array
     {
         return [
@@ -157,5 +166,4 @@ final class ThePackagistBot
             'TG_BOT_GET_SEND_MESSAGE_URL' => $appConfigs['TG_BOT_GET_SEND_MESSAGE_URL']
         ];
     }
-
 }
