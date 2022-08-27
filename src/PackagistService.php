@@ -19,9 +19,14 @@ final class PackagistService
         $this->httpClient = $httpClient;
     }
 
+    /**
+     * Receive packages from packagist or default responses 
+     * @param string $tag
+     * @return string|array
+     */
     public function getPackagistPackages(string $tag): string|array
     {
-        // Second check
+        // TODO Replace checks
         if (mb_strlen($tag) < 1) {
            return 'Tag length must be equal or grater than 1';
         }
@@ -35,11 +40,21 @@ final class PackagistService
         return ($this->isPackagesExist($packages))? $packages['results'] : 'No packages for this tag';
     }
 
+    /**
+     * Get web url for given tag
+     * @param string $tag
+     * @return string url
+     */
     public function getWebUrlForTag(string $tag): string
     {
         return $this->configs['TG_BOT_PACKAGIST_WEB_TAG_SEARCH'] . $tag;
     }
 
+    /**
+     * Receive packages from Packagist
+     * @param string $tag
+     * @return array with packages
+     */
     private function requestPackagesByTag(string $tag): array
     {
         // TODO add response checks
@@ -50,11 +65,21 @@ final class PackagistService
         return json_decode($response->getBody()->getContents(), true);
     }
 
+    /**
+     * Get url for request packages
+     * @param string $searchTag
+     * @return string
+     */
     private function getUriForRequest(string $searchTag): string
     {
         return $this->configs['TG_BOT_PACKAGIST_API_TAG_SEARCH'] . $searchTag;
     }
 
+    /**
+     * Check is packages exist
+     * @param array $requestResult
+     * @return boolean exist or not
+     */
     private function isPackagesExist(array $requestResult): bool
     {
         return ($requestResult['total'])? true : false;
